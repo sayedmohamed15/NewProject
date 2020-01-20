@@ -17,3 +17,5 @@ Route::get('/', function () {
 
 Route::post('/articles','ArticleController@store');
 Route::get('/article/create','ArticleController@create');
+Route::get('/article/{article}/edit','ArticleController@edit');
+Route::put('/article/{article}','ArticleController@update');
