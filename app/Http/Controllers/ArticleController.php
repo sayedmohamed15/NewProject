@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Article;
+use App\Tag;
 use Illuminate\Http\Request;
 
 class ArticleController extends Controller
@@ -24,7 +25,10 @@ class ArticleController extends Controller
      */
     public function create()
     {
-        return view('articles.create');
+        return view('articles.create',[
+            'tags'=>Tag::all()
+            ]
+            );
     }
 
     /**
@@ -37,14 +41,18 @@ class ArticleController extends Controller
     {
         $validateInputes= $this->validateRequest($request);
 
-        Article::firstOrCreate($validateInputes);
-//        $article = new Article();
+//        $newArticle=Article::firstOrCreate($validateInputes);
+//        dd($newArticle);
+
+
+        $article = new Article($validateInputes);
+        $article->user_id=1;
 //
 //        $article->title=request('title');
 //        $article->excerpt=request('excerpt');
 //        $article->body=request('body');
-//        $article->save();
-
+        $article->save();
+        $article->tags()->attach($request['tags']);
         return redirect(route('article.create'));
     }
 
@@ -112,7 +120,8 @@ class ArticleController extends Controller
         return $request->validate([
             'title' => 'required',
             'excerpt' => 'required',
-            'body' => 'required'
+            'body' => 'required',
+            'tags'=>'exists:tags,id'
         ]);
     }
 }
